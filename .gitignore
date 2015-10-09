@@ -3,3 +3,5 @@
 /.idea/misc.xml
 Santos/*/__pycache__/*
 Santos/__pycache__/*
+/docs
+docs/*
