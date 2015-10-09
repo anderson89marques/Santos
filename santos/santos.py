@@ -5,10 +5,7 @@ from threading import Thread
 from datetime import datetime
 import sys
 
-if sys.version_info < (3, 2):
-    from exceptions import *
-else:
-    from exceptions import TaskException
+from exceptions import TaskException
 
 
 class TaskScheduling(Thread):

@@ -3,27 +3,13 @@ __author__ = 'anderson'
 
 from santos import TaskScheduling
 
-def time_this(original_function):
-    def new_function(*args, **kwargs):
-        import datetime
-        before = datetime.datetime.now()
-        x = original_function(*args, **kwargs)
-        after = datetime.datetime.now()
-        print("Tempo de processamento {0}".format(after-before))
-        return x
-    return new_function
-
 @TaskScheduling(seconds="10")
 def function(timein):
     print("Time: %r" % timein)
-    #time.sleep(timein)
-    #a = []
-    #for x in range(timein):
-    #    a.append(x)
     a = [x for x in range(timein)]
     print("Fim")
 
-#@TaskScheduling(hour="8", seconds="30", minutes="", day_of_the_week="S", time_of_the_day="hh:mm:ss", day_of_month="S")
+@TaskScheduling(minutes="15")
 def do_something(a):
     print("Print do_something: %s" % a)
     import time
@@ -42,10 +28,10 @@ class Teste(object):
         time.sleep(10)
         print("terminou some_function")
 
+#Descomente e execute o módulo para testar.
 
 #do_something("a")
-obj = Teste()
-obj.some_function("b")
-print("HEHEHEHEH")
+#obj = Teste()
+#obj.some_function("b")
 #function(100000000)
 
