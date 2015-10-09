@@ -23,7 +23,7 @@ mostrado nos exemplos abaixo. Os testes foram feitos nas versões 2.7 e 3.4 do P
 	Os parâmetros aceitos são: seconds, minutes, hour, time_of_the_day, day_of_the_week, day_of_the_month
 Descrição:
 	O parâmetro seconds define que a função será executada repetidamente na frequência do valor passado em segundos.
-   ex: seconds="20", será executado de 20 em 20 segundos
+   ex: seconds="20", será executado de 20 em 20 segundos 
    	O parâmetro minutes define que a função será executada repetidamente na frequência do valor passado em minutos.
    ex: minutes="20", será executado de 20 em 20 minutos
  	O parâmetro hour define que a função será executada repetidamente na frequência do valor passado em horas
