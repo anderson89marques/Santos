@@ -3,7 +3,6 @@ __author__ = 'anderson'
 
 from threading import Thread
 from datetime import datetime
-import sys
 
 from exceptions import TaskException
 
@@ -78,8 +77,6 @@ class TaskScheduling(Thread):
         self.args = arguments
         self.argumentsMap = argumentsMap
         self.execute = False
-        print(arguments)
-        print("argumentsMap: %r" % argumentsMap)
 
     #É o decorador de verdade, recebe a função decorada, como é uma classe preciso implementar o método call
     def __call__(self, function):
@@ -87,7 +84,6 @@ class TaskScheduling(Thread):
 
         #recebe os argumentos da função decorada
         def task(*functionargs, **functionArgumentsMap):
-            print("Task")
             self.functionargs = functionargs
             self.functionArgumentsMap = functionArgumentsMap
             self.start()
@@ -100,7 +96,7 @@ class TaskScheduling(Thread):
             self.execute = True
             while self.execute:
                 interval = self.calculateInterval()
-                print("Interval: %f" % interval)
+                print("Interval: %f in seconds" % interval)
                 time.sleep(interval)
                 self.function(*self.functionargs, **self.functionArgumentsMap)
         except TaskException as t:
@@ -144,16 +140,12 @@ class TaskScheduling(Thread):
         dif = days[entrada] - weekday
         sleep, diference = self.auxCalculate(time_of_the_day)
 
-        print("SLEEP: %f , DIFERENCE: %f" %(sleep, diference))
-
         if days[entrada] == weekday:
-            print("igual")
             if diference > 0:
                 return sleep
             else:
                 return sleep + (6 * (24*3600)) #24 horas para segundo
         elif days[entrada] > weekday:
-            print("maior")
             if diference > 0:
                 return sleep + (dif * (24*3600))
             else:
@@ -163,7 +155,6 @@ class TaskScheduling(Thread):
                 else:
                     return sleep + ((dif-1) * (24*3600)) #24 horas para segundo
         else:
-            print("menor")
             #numero de dias de diferença
             resp = 7 - abs(dif)
 
@@ -188,20 +179,16 @@ class TaskScheduling(Thread):
 
             one_day_has = '24:00:00'.split(":")
             time_day = sum([a*b for a, b in zip(times, [int(i) for i in one_day_has])])
-            print("time day %r" % time_day)
 
             aux_time = time_of_the_day.split(":")
             time_want = sum([a*b for a, b in zip(times, [int(i) for i in aux_time])])
-            print("time quero %r " % time_want)
 
-            #Trasnforma o tempo atual para segundos
+            #Transforma o tempo atual para segundos
             hjf = datetime.now().strftime("%H:%M:%S").split(":")
             now = sum([a*b for a, b in zip(times, [int(i) for i in hjf])])
-            print("now %r" % now)
 
             #diferença entre o tempo atual e o tempo desejado em segundos
             diference = time_want - now
-            print("diference %r " % (diference))
             sleep_time = None
 
             if diference < 0:
