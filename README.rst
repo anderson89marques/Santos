@@ -1,7 +1,9 @@
-# Santos
+Santos
+===============
 	Um agendador de tarefas para aplicações Python
 
-# Um pouco de história
+Um pouco de história
+=======================
 	Em 1904, cansado da falta de praticidade do relógio de bolso, o modelo "portátil" mais comum
 de sua época,Santos Dumont reclamou para um de seus melhores amigos, o joalheiro francês Louis Cartier
 (fundador da joalheira Cartier). Esses relógios, como indica o nome, ficavam guardados no bolso e, em
@@ -13,7 +15,8 @@ em projetos, isso era um problema grave.
 presenteou o aviador com a solução que havia encontrado: O protótipo de um dos primeiros relógios de pulso
 masculinos, que recebeu o nome "Santos". Então deu o nome do relógio para esta lib.
 
-#Sobre
+Sobre
+=======================
 	Santos permite que você agende a execução da alguma tarefa apenas decorando a função ou método como
 mostrado nos exemplos abaixo. Os testes foram feitos nas versões 2.7 e 3.4 do Python.
 
