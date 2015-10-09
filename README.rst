@@ -22,24 +22,25 @@ Sobre
 	Santos permite que você agende a execução da alguma tarefa apenas decorando a função ou método como
 	mostrado nos exemplos abaixo. Os testes foram feitos nas versões 2.7 e 3.4 do Python.
 
-	Os parâmetros aceitos são: seconds, minutes, hour, time_of_the_day, day_of_the_week, day_of_the_month
-Descrição:
-	O parâmetro seconds define que a função será executada repetidamente na frequência do valor passado em segundos.
+	Os parâmetros aceitos são: seconds, minutes, hour, time_of_the_day, day_of_the_week, day_of_the_month.
+*Descrição:
+	- O parâmetro seconds define que a função será executada repetidamente na frequência do valor passado em segundos.
         ex: seconds="20", será executado de 20 em 20 segundos
-   	O parâmetro minutes define que a função será executada repetidamente na frequência do valor passado em minutos.
+   	- O parâmetro minutes define que a função será executada repetidamente na frequência do valor passado em minutos.
         ex: minutes="20", será executado de 20 em 20 minutos
- 	O parâmetro hour define que a função será executada repetidamente na frequência do valor passado em horas
+ 	- O parâmetro hour define que a função será executada repetidamente na frequência do valor passado em horas
         ex: hour="2", será executado de 2 em 2 horas
     obs: Esses três parâmetros não podem ser combinados, nem entre e nem com os dois abaixo.
-	O parâmetro time_of_the_day define que a função será executada todo dia em um horário específico, que deve ser passado no seguinte formato hh:mm:ss.(hh: 0..23 ; mm: 0..59, ss: 0..59)
+	- O parâmetro time_of_the_day define que a função será executada todo dia em um horário específico, que deve ser passado no seguinte formato hh:mm:ss.(hh: 0..23 ; mm: 0..59, ss: 0..59)
         ex: time_of_the_day="14:15:00", será executada todo dia às quartoze horas e quinze minutos
- 	O parâmetro day_of_the_week define que a função será executada repetidamente no dia da semana passado como valor.
-	Os valores possíveis são: Su(Sunday/Domingo), M(Monday/Segunda), Tu(Tuesday/Terça), W(Wednesday/Quarta), Th(Thursday/Quinta), F(Friday/Sexta), Sa(Saturday/Sábado) em maiúsculo.
-	Tem que ser combinado com o parâmetro time_of_the_day para especificar a hora, minuto e segundo daquele dia da semana.
+ 	- O parâmetro day_of_the_week define que a função será executada repetidamente no dia da semana passado como valor.
+	    Os valores possíveis são: Su(Sunday/Domingo), M(Monday/Segunda), Tu(Tuesday/Terça), W(Wednesday/Quarta), Th(Thursday/Quinta), F(Friday/Sexta), Sa(Saturday/Sábado) em maiúsculo.
+	    Tem que ser combinado com o parâmetro time_of_the_day para especificar a hora, minuto e segundo daquele dia da semana.
         ex: day_of_the_week="W"    time_of_the_day="22:00:00", Será executado toda quarta às vinte e dua horas.
 
-    Exemplos de uso:
-    Basta decorar a função eou método que se queira agendar.
+Exemplos de uso:
+================
+*Basta decorar a função eou método que se queira agendar.
 
         @TaskScheduling(seconds="30")
         def do_something(a):
