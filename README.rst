@@ -1,5 +1,4 @@
-# Santos
-======
+**Santos**
 	Um agendador de tarefas para aplicações Python
 
 Um pouco de história
