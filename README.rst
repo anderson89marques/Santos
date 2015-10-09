@@ -50,8 +50,6 @@ Descrição:
 
         do_something()
 
-        *****************************************
-
         class Teste(object):
 
             @TaskScheduling(time_of_the_day="08:30:00")
