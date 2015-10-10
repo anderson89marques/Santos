@@ -2,7 +2,7 @@
 /.idea/workspace.xml
 /.idea/misc.xml
 Santos/*/__pycache__
-Santos/__pycache__
+Santos/__pycache__/*
 santos/__pycache__
 __pycache__
 /docs
