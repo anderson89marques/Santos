@@ -7,3 +7,5 @@ santos/__pycache__
 __pycache__
 /docs
 docs/*
+*.egg
+*.egg-info
