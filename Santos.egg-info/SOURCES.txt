@@ -1,0 +1,14 @@
+LICENSE.txt
+MANIFEST.in
+README.rst
+setup.cfg
+setup.py
+test.py
+Santos.egg-info/PKG-INFO
+Santos.egg-info/SOURCES.txt
+Santos.egg-info/dependency_links.txt
+Santos.egg-info/top_level.txt
+exceptions/__init__.py
+exceptions/exceptions.py
+santos/__init__.py
+santos/santos.py

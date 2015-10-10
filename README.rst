@@ -60,6 +60,10 @@ combinado com o parâmetro time_of_the_day para especificar a hora, minuto e seg
 Exemplos de uso
 ---------------
 
+.. code-block:: bash
+
+    pip install Santos
+
 .. code-block:: python
 
     from santos import TaskScheduling, stopjobs
