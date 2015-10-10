@@ -62,30 +62,30 @@ Exemplos de uso
 
 .. code-block:: python
 
-from santos import TaskScheduling, stopjobs
+    from santos import TaskScheduling, stopjobs
 
-@TaskScheduling(name="nome", seconds="30")
+    @TaskScheduling(name="nome", seconds="30")
     def do_something(a):
         print("Print do_something: %s" % a)
         import time
         time.sleep(6)
         print("terminou do_something")
 
-do_something()
-stopjobs.stop("nome")
+    do_something()
+    stopjobs.stop("nome")
 
-class Teste(object):
+    class Teste(object):
 
-@TaskScheduling(name="outronome", time_of_the_day="08:30:00")
-def some_function(self, a):
-    print("Print some_function: %s" % a)
-    import time
-    print("Função some_function")
-    time.sleep(10)
-    print("terminou some_function")
+        @TaskScheduling(name="outronome", time_of_the_day="08:30:00")
+        def some_function(self, a):
+            print("Print some_function: %s" % a)
+            import time
+            print("Função some_function")
+            time.sleep(10)
+            print("terminou some_function")
 
-obj = Teste()
-obj.some_function("b")
+    obj = Teste()
+    obj.some_function("b")
 
 Veja ``exemples`` para mais exemplos
 
