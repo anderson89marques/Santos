@@ -3,8 +3,25 @@ __author__ = 'anderson'
 
 from threading import Thread
 from datetime import datetime
-
 from exceptions import TaskException
+
+class ControlJobs:
+    __jobs = []
+
+    def stop(self, jobname):
+        print("Job name %s" % jobname)
+        print(self.__jobs)
+        for idx, th in enumerate(self.__jobs):
+            if jobname in th:
+                th[jobname]._stop()
+                del self.__jobs[idx]
+                break
+
+    def addjob(self, job):
+        self.__jobs.append(job)
+        print(self.__jobs)
+
+stopjobs = ControlJobs()
 
 
 class TaskScheduling(Thread):
@@ -69,6 +86,7 @@ class TaskScheduling(Thread):
         obj.some_function("b")
 
     """
+    days = {"M": 0, "Tu": 1, "W": 2, "Th": 3, "F": 4, "Sa": 5, "Su": 6}
 
     #recebe os parametros do decorator
     def __init__(self, *arguments, **argumentsMap):
@@ -76,7 +94,9 @@ class TaskScheduling(Thread):
 
         self.args = arguments
         self.argumentsMap = argumentsMap
+        self.threadname = argumentsMap["name"]
         self.execute = False
+        print("Arguments: %r:" % self.argumentsMap)
 
     #É o decorador de verdade, recebe a função decorada, como é uma classe preciso implementar o método call
     def __call__(self, function):
@@ -86,6 +106,7 @@ class TaskScheduling(Thread):
         def task(*functionargs, **functionArgumentsMap):
             self.functionargs = functionargs
             self.functionArgumentsMap = functionArgumentsMap
+            stopjobs.addjob({self.threadname: self})
             self.start()
         return task
 
@@ -95,8 +116,9 @@ class TaskScheduling(Thread):
             import time
             self.execute = True
             while self.execute:
+
                 interval = self.calculateInterval()
-                print("Interval: %f in seconds" % interval)
+                print("Interval: %r in seconds" % interval)
                 time.sleep(interval)
                 self.function(*self.functionargs, **self.functionArgumentsMap)
         except TaskException as t:
@@ -105,6 +127,7 @@ class TaskScheduling(Thread):
     def _stop(self):
         print("STOP")
         self.execute = False
+        return self.execute
 
     def calculateInterval(self):
         """
@@ -113,39 +136,52 @@ class TaskScheduling(Thread):
         chamado o método auxCalculate para determinar tal tempo.
         :return:
         """
-        try:
-            if "day_of_the_week" in self.argumentsMap:
-                if "time_of_the_day" in self.argumentsMap:
-                    return self.calculateDayOfTheWeek(self.argumentsMap["day_of_the_week"],
-                                                      self.argumentsMap["time_of_the_day"])
-                else:
-                    raise TaskException("Parâmetro time_of_the_day não está presente")
-            elif "time_of_the_day" in self.argumentsMap:
-                return self.auxCalculate(self.argumentsMap["time_of_the_day"])[0]
-            elif "hour" in self.argumentsMap:
-                return int(self.argumentsMap["hour"]) * 3600
-            elif "minutes" in self.argumentsMap:
-                return int(self.argumentsMap["minutes"]) * 60
-            elif "seconds" in self.argumentsMap:
-                return int(self.argumentsMap["seconds"])
+
+        if "day_of_the_week" in self.argumentsMap:
+            if "hour" in self.argumentsMap or "minutes" in self.argumentsMap or "seconds" in self.argumentsMap:
+                raise TaskException("Parametros extras que não combinam")
+
+            if "time_of_the_day" in self.argumentsMap:
+                return self.calculateDayOfTheWeek(self.argumentsMap["day_of_the_week"],
+                                                  self.argumentsMap["time_of_the_day"])
             else:
-                raise TaskException("Parâmetro(s): %r inválidos" % self.argumentsMap)
-        except TaskException as t:
-            print(t)
+                raise TaskException("Parâmetro time_of_the_day não está presente")
+
+        elif "time_of_the_day" in self.argumentsMap:
+            if "hour" in self.argumentsMap or "minutes" in self.argumentsMap or "seconds" in self.argumentsMap:
+                raise TaskException("Parametros extras que não combinam")
+            return self.auxCalculate(self.argumentsMap["time_of_the_day"])[0]
+
+        elif "hour" in self.argumentsMap:
+            if "seconds" in self.argumentsMap or "minutes" in self.argumentsMap:
+                raise TaskException("Parametros extras que não combinam")
+            return int(self.argumentsMap["hour"]) * 3600
+
+        elif "minutes" in self.argumentsMap:
+            if "seconds" in self.argumentsMap:
+                raise TaskException("Parametros extras que não combinam")
+            else:
+                return int(self.argumentsMap["minutes"]) * 60
+
+        elif "seconds" in self.argumentsMap:
+            print("seconds")
+            return int(self.argumentsMap["seconds"])
+
+        else:
+            raise TaskException("Parâmetro(s): %r inválidos" % self.argumentsMap)
 
     def calculateDayOfTheWeek(self, day_of_the_week, time_of_the_day):
-        days = {"M": 0, "Tu": 1, "W": 2, "Th": 3, "F": 4, "Sa": 5, "Su": 6}
         entrada = day_of_the_week
         weekday = datetime.now().weekday()
-        dif = days[entrada] - weekday
+        dif = self.days[entrada] - weekday
         sleep, diference = self.auxCalculate(time_of_the_day)
 
-        if days[entrada] == weekday:
+        if self.days[entrada] == weekday:
             if diference > 0:
                 return sleep
             else:
                 return sleep + (6 * (24*3600)) #24 horas para segundo
-        elif days[entrada] > weekday:
+        elif self.days[entrada] > weekday:
             if diference > 0:
                 return sleep + (dif * (24*3600))
             else:

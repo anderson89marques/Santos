@@ -1,15 +1,16 @@
 __author__ = 'anderson'
 # -*- coding: utf-8 -*-
 
-from santos import TaskScheduling
+from santos import TaskScheduling, stopjobs
+import time
 
-@TaskScheduling(seconds="10")
+@TaskScheduling(name="function", seconds="10")
 def function(timein):
     print("Time: %r" % timein)
     a = [x for x in range(timein)]
     print("Fim")
 
-@TaskScheduling(minutes="15")
+@TaskScheduling(name="do", seconds="15")
 def do_something(a):
     print("Print do_something: %s" % a)
     import time
@@ -20,7 +21,7 @@ def do_something(a):
 
 class Teste(object):
 
-    @TaskScheduling(day_of_the_week="Th", time_of_the_day="00:16:00")
+    @TaskScheduling(name="some", day_of_the_week="Th", time_of_the_day="00:16:00")
     def some_function(self, a):
         print("Print some_function: %s" % a)
         import time
@@ -34,4 +35,5 @@ class Teste(object):
 #obj = Teste()
 #obj.some_function("b")
 #function(100000000)
+#do_something("a")
 
