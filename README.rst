@@ -25,13 +25,13 @@ Um agendador para tarefas que precisam ser executados de forma periodica.
 Santos permite a você rodar funcões e métodos Python periodicamente em
 intervalos pré-determinados usando uma sintaxe bem simples.
 
-Features
---------
-- A simple to use API for scheduling jobs.
-- Very lightweight and no external dependencies.
-- Excellent test coverage.
-- Tested on Python 2.7 and 3.4
+Características
+---------------
 
+- Uma API simples para agendamenro de tarefas.
+- Sem dependência external.
+- teste unitário.
+- Testada no Python 2.7 and 3.4
 
 Sobre
 -----
@@ -91,7 +91,6 @@ Veja ``exemples`` para mais exemplos
 
 Meta
 ----
-
 Anderson Marques - andersonoanjo18@gmail.com
 
 Distribuído sobre lincensa MIT. Veja ``LICENSE.txt`` para mais informções.
