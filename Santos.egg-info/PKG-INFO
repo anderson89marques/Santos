@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: Santos
-Version: 1.0.0
+Version: 1.0.1
 Summary: A task schedule
 Home-page: https://github.com/anderson89marques/Santos
 Author: Anderson Marques
@@ -68,6 +68,10 @@ Description: .. highlight:: rst
         Exemplos de uso
         ---------------
         
+        .. code-block:: bash
+        
+            pip install Santos
+        
         .. code-block:: python
         
             from santos import TaskScheduling, stopjobs
@@ -81,6 +85,8 @@ Description: .. highlight:: rst
         
             do_something()
             stopjobs.stop("nome")
+        
+        ----------------------------------------------------------------------
         
             class Teste(object):
         

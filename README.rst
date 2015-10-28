@@ -78,6 +78,8 @@ Exemplos de uso
     do_something()
     stopjobs.stop("nome")
 
+----------------------------------------------------------------------
+
     class Teste(object):
 
         @TaskScheduling(name="outronome", time_of_the_day="08:30:00")

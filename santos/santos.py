@@ -4,13 +4,17 @@ __author__ = 'anderson'
 from threading import Thread
 from datetime import datetime
 from exceptions import TaskException
+import logging
+
+log = logging.getLogger(__name__)
+
 
 class ControlJobs:
     __jobs = []
 
     def stop(self, jobname):
-        print("Job name %s" % jobname)
-        print(self.__jobs)
+        log.debug("Job name %s" % jobname)
+        log.debug(self.__jobs)
         for idx, th in enumerate(self.__jobs):
             if jobname in th:
                 th[jobname]._stop()
@@ -19,7 +23,7 @@ class ControlJobs:
 
     def addjob(self, job):
         self.__jobs.append(job)
-        print(self.__jobs)
+        log.debug(self.__jobs)
 
 stopjobs = ControlJobs()
 
@@ -96,7 +100,7 @@ class TaskScheduling(Thread):
         self.argumentsMap = argumentsMap
         self.threadname = argumentsMap["name"]
         self.execute = False
-        print("Arguments: %r:" % self.argumentsMap)
+        log.debug("Arguments: %r:" % self.argumentsMap)
 
     #É o decorador de verdade, recebe a função decorada, como é uma classe preciso implementar o método call
     def __call__(self, function):
@@ -112,20 +116,20 @@ class TaskScheduling(Thread):
 
     def run(self):
         try:
-            print("JOB RUNNING")
+            log.debug("JOB RUNNING")
             import time
             self.execute = True
             while self.execute:
 
                 interval = self.calculateInterval()
-                print("Interval: %r in seconds" % interval)
+                log.debug("Interval: %r in seconds" % interval)
                 time.sleep(interval)
                 self.function(*self.functionargs, **self.functionArgumentsMap)
         except TaskException as t:
-            print(t)
+            log.debug(t)
 
     def _stop(self):
-        print("STOP")
+        log.debug("STOP")
         self.execute = False
         return self.execute
 
@@ -164,7 +168,7 @@ class TaskScheduling(Thread):
                 return int(self.argumentsMap["minutes"]) * 60
 
         elif "seconds" in self.argumentsMap:
-            print("seconds")
+            log.debug("seconds")
             return int(self.argumentsMap["seconds"])
 
         else:
@@ -234,6 +238,6 @@ class TaskScheduling(Thread):
                 #ainda será executado no mesmo dia
                 sleep_time = diference
         except TaskException as t:
-            print(t)
+            log.debug(t)
 
         return sleep_time, diference

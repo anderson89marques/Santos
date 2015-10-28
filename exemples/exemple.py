@@ -31,7 +31,7 @@ class Teste(object):
 
 #Descomente e execute o módulo para testar.
 
-#do_something("a")
+do_something("a")
 #obj = Teste()
 #obj.some_function("b")
 #function(100000000)
