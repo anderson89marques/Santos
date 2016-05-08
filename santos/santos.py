@@ -1,7 +1,7 @@
 __author__ = 'anderson'
 # -*- coding: utf-8 -*-
 
-from threading import Thread
+from threading import Thread, Condition
 from datetime import datetime
 from exceptions import TaskException
 import logging
@@ -9,26 +9,49 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class ControlJobs:
-    __jobs = []
+class ThreadSchecule:
+    __jobs = []  # jobs que serão executados
 
-    def stop(self, jobname):
-        log.debug("Job name %s" % jobname)
+    def pause_job(self, job_name):
+        log.debug("Job name %s" % job_name)
         log.debug(self.__jobs)
-        for idx, th in enumerate(self.__jobs):
-            if jobname in th:
-                th[jobname]._stop()
+        for j in self.__jobs:
+            if job_name == j.name:
+                j.pause()  # job é bloqueado e fica esperando ser notificado
+                #del self.__jobs[idx]
+                break
+
+    def remove_job(self, job_name):
+        log.debug("Job name %s" % job_name)
+        log.debug(self.__jobs)
+        for idx, job in enumerate(self.__jobs):
+            if job_name == job.name:
+                job._stop()
                 del self.__jobs[idx]
                 break
 
-    def addjob(self, job):
+    def resume_job(self, job_name):
+        for job in self.__jobs:
+            if job_name == job.name:
+                print(job.is_alive())
+                job.paused = False
+                break
+
+    def add_job(self, func, id, **kwargs):
+        """No kwargs estará todos os parâmetros para a função que será executada"""
+        print(func)
+        print(id)
+        print(kwargs)
+        job = Job(func, id, dargs=kwargs)
         self.__jobs.append(job)
-        log.debug(self.__jobs)
+        job.start()
+        print(self.__jobs)
 
-stopjobs = ControlJobs()
+    def __len__(self):
+        return len(self.__jobs)
 
 
-class TaskScheduling(Thread):
+class Job(Thread):
     """
         Os parâmetros aceitos são:
         seconds, minutes, hour, time_of_the_day, day_of_the_week, day_of_the_month
@@ -65,73 +88,56 @@ class TaskScheduling(Thread):
         Exemplos de uso:
         Basta decorar a função ou método da classe que se queira agendar.
 
-        @TaskScheduling(seconds="30")
-        def do_something(a):
-            print("Print do_something: %s" % a)
-            import time
-            time.sleep(6)
-            print("terminou do_something")
-
-        do_something()
 
         *****************************************
 
-        class Teste(object):
-
-            @TaskScheduling(time_of_the_day="08:30:00")
-            def some_function(self, a):
-                print("Print some_function: %s" % a)
-                import time
-                print("Função some_function")
-                time.sleep(10)
-                print("terminou some_function")
-
-        obj = Teste()
-        obj.some_function("b")
-
     """
+
     days = {"M": 0, "Tu": 1, "W": 2, "Th": 3, "F": 4, "Sa": 5, "Su": 6}
 
-    #recebe os parametros do decorator
-    def __init__(self, *arguments, **argumentsMap):
+    def __init__(self, func, id, **arguments_map):
         Thread.__init__(self)
+        print("////")
+        print(arguments_map)
+        print(func)
+        print(id)
+        try:
+            self.name = id or ""
+            self.args_function = arguments_map.get("dargs").get("kwargs")  # argumentos para a função a ser executada
+            if self.args_function:
+                del arguments_map["dargs"]["kwargs"] # removendo os parâmetros da função a ser executada
+            self.arguments_map = arguments_map["dargs"]   # parâmetros de tempo
+            self.function = func
+            self.condict = Condition()  # controlará o bloqueio/desbloqueio do job
 
-        self.args = arguments
-        self.argumentsMap = argumentsMap
-        self.threadname = argumentsMap["name"]
-        self.execute = False
-        log.debug("Arguments: %r:" % self.argumentsMap)
+        except Exception as e:
+            print("Erro {}".format(e.__str__()))
 
-    #É o decorador de verdade, recebe a função decorada, como é uma classe preciso implementar o método call
-    def __call__(self, function):
-        self.function = function
-
-        #recebe os argumentos da função decorada
-        def task(*functionargs, **functionArgumentsMap):
-            self.functionargs = functionargs
-            self.functionArgumentsMap = functionArgumentsMap
-            stopjobs.addjob({self.threadname: self})
-            self.start()
-        return task
+        print("name:{}, args_functio:{},args_map:{}, func:{}".format(self.name, self.args_function, self.arguments_map, self.function))
 
     def run(self):
         try:
             log.debug("JOB RUNNING")
             import time
             self.execute = True
-            while self.execute:
+            self.paused = False
 
-                interval = self.calculateInterval()
-                log.debug("Interval: %r in seconds" % interval)
-                time.sleep(interval)
-                self.function(*self.functionargs, **self.functionArgumentsMap)
+            while self.execute:
+                if not self.paused:
+                    interval = self.calculateInterval()
+                    log.debug("Interval: %r in seconds" % interval)
+                    time.sleep(interval)
+                    self.function(**self.args_function)
         except TaskException as t:
             log.debug(t)
+
+    def pause(self):
+        log.debug("PAUSE")
+        self.paused = True
 
     def _stop(self):
         log.debug("STOP")
         self.execute = False
-        return self.execute
 
     def calculateInterval(self):
         """
@@ -141,38 +147,38 @@ class TaskScheduling(Thread):
         :return:
         """
 
-        if "day_of_the_week" in self.argumentsMap:
-            if "hour" in self.argumentsMap or "minutes" in self.argumentsMap or "seconds" in self.argumentsMap:
+        if "day_of_the_week" in self.arguments_map:
+            if "hour" in self.arguments_map or "minutes" in self.arguments_map or "seconds" in self.arguments_map:
                 raise TaskException("Parametros extras que não combinam")
 
-            if "time_of_the_day" in self.argumentsMap:
-                return self.calculateDayOfTheWeek(self.argumentsMap["day_of_the_week"],
-                                                  self.argumentsMap["time_of_the_day"])
+            if "time_of_the_day" in self.arguments_map:
+                return self.calculateDayOfTheWeek(self.arguments_map["day_of_the_week"],
+                                                  self.arguments_map["time_of_the_day"])
             else:
                 raise TaskException("Parâmetro time_of_the_day não está presente")
 
-        elif "time_of_the_day" in self.argumentsMap:
-            if "hour" in self.argumentsMap or "minutes" in self.argumentsMap or "seconds" in self.argumentsMap:
+        elif "time_of_the_day" in self.arguments_map:
+            if "hour" in self.arguments_map or "minutes" in self.arguments_map or "seconds" in self.arguments_map:
                 raise TaskException("Parametros extras que não combinam")
-            return self.auxCalculate(self.argumentsMap["time_of_the_day"])[0]
+            return self.auxCalculate(self.arguments_map["time_of_the_day"])[0]
 
-        elif "hour" in self.argumentsMap:
-            if "seconds" in self.argumentsMap or "minutes" in self.argumentsMap:
+        elif "hour" in self.arguments_map:
+            if "seconds" in self.arguments_map or "minutes" in self.arguments_map:
                 raise TaskException("Parametros extras que não combinam")
-            return int(self.argumentsMap["hour"]) * 3600
+            return int(self.arguments_map["hour"]) * 3600
 
-        elif "minutes" in self.argumentsMap:
-            if "seconds" in self.argumentsMap:
+        elif "minutes" in self.arguments_map:
+            if "seconds" in self.arguments_map:
                 raise TaskException("Parametros extras que não combinam")
             else:
-                return int(self.argumentsMap["minutes"]) * 60
+                return int(self.arguments_map["minutes"]) * 60
 
-        elif "seconds" in self.argumentsMap:
+        elif "seconds" in self.arguments_map:
             log.debug("seconds")
-            return int(self.argumentsMap["seconds"])
+            return int(self.arguments_map["seconds"])
 
         else:
-            raise TaskException("Parâmetro(s): %r inválidos" % self.argumentsMap)
+            raise TaskException("Parâmetro(s): %r inválidos" % self.arguments_map)
 
     def calculateDayOfTheWeek(self, day_of_the_week, time_of_the_day):
         entrada = day_of_the_week

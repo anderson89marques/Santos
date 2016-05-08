@@ -5,7 +5,10 @@ Santos/*/__pycache__
 Santos/__pycache__/*
 santos/__pycache__
 __pycache__
+santos/__pycache__/*
 /docs
 docs/*
 *.egg
 *.egg-info
+Santos.egg-info
+build
