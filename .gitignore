@@ -12,3 +12,4 @@ docs/*
 *.egg-info
 Santos.egg-info
 build
+dist
