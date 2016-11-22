@@ -1,6 +1,7 @@
 __author__ = 'anderson'
 # -*- coding: utf-8 -*-
-from santos import ThreadSchecule
+
+from santos import ThreadSchedule
 import time
 
 
@@ -26,7 +27,7 @@ def f2(schedule, job_name):
 def funcao(a):
     print(a)
 
-schedule = ThreadSchecule()
+schedule = ThreadSchedule()
 schedule.add_job(funcao, seconds="3", id="func1", kwargs={"a": "a"})
 print("len1: {}".format(len(schedule)))
 schedule.add_job(funcao, seconds="3", id="func2", kwargs={"a": "b"})

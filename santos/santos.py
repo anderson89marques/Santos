@@ -9,7 +9,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class ThreadSchecule:
+class ThreadSchedule:
     __jobs = []  # jobs que serão executados
 
     def pause_job(self, job_name):

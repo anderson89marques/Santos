@@ -4,6 +4,6 @@ import sys
 if sys.version_info < (3, 2):
     from santos import *
 else:
-    from santos.santos import TaskScheduling, stopjobs, ThreadSchecule
+    from santos.santos import ThreadSchedule
 
 
