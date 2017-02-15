@@ -36,7 +36,7 @@ schedule.add_job(funcao, seconds="3", id="func1", kwargs={"a": "A"})
 print("len1: {}".format(len(schedule)))
 schedule.add_job(funcao, seconds="3", id="func2", kwargs={"a": "B"})
 print("len2: {}".format(len(schedule)))
-schedule.add_job(func,day_of_the_week='Tu', time_of_the_day="02:16:50", id="func3", kwargs={"a": "Time_of"})
+schedule.add_job(func, day_of_the_week='Tu', time_of_the_day="02:16:50", id="func3", kwargs={"a": "Time_of"})
 print("len3: {}".format(len(schedule)))
 
 

@@ -23,7 +23,6 @@ class ThreadSchedule:
 
     def remove_job(self, job_name):
         log.debug("Job name %s" % job_name)
-        log.debug(self.__jobs)
         for idx, job in enumerate(self.__jobs):
             if job_name == job.name:
                 job._stop()
@@ -33,19 +32,15 @@ class ThreadSchedule:
     def resume_job(self, job_name):
         for job in self.__jobs:
             if job_name == job.name:
-                print(job.is_alive())
                 job.paused = False
                 break
 
     def add_job(self, func, id, **kwargs):
         """No kwargs estará todos os parâmetros para a função que será executada"""
-        print(func)
-        print(id)
-        print(kwargs)
+        # é bom fazer um teste pra ver se de fato o id foi colocando, pois acho melhor esse parâmetro ser obrigatório
         job = Job(func, id, dargs=kwargs)
         self.__jobs.append(job)
         job.start()
-        print(self.__jobs)
 
     def __len__(self):
         return len(self.__jobs)
@@ -85,10 +80,6 @@ class Job(Thread):
 
             ex: day_of_the_week="W"    time_of_the_day="22:00:00", Será executado toda quarta às vinte e dua horas.
 
-        Exemplos de uso:
-        Basta decorar a função ou método da classe que se queira agendar.
-
-
         *****************************************
 
     """
@@ -97,10 +88,6 @@ class Job(Thread):
 
     def __init__(self, func, id, **arguments_map):
         Thread.__init__(self)
-        print("////")
-        print(arguments_map)
-        print(func)
-        print(id)
         try:
             self.name = id or ""
             self.args_function = arguments_map.get("dargs").get("kwargs")  # argumentos para a função a ser executada
@@ -111,9 +98,9 @@ class Job(Thread):
             self.condict = Condition()  # controlará o bloqueio/desbloqueio do job
 
         except Exception as e:
-            print("Erro {}".format(e.__str__()))
+            log.debug("Erro {}".format(e.__str__()))
 
-        print("name:{}, args_functio:{},args_map:{}, func:{}".format(self.name, self.args_function, self.arguments_map, self.function))
+        log.debug("name:{}, args_functio:{},args_map:{}, func:{}".format(self.name, self.args_function, self.arguments_map, self.function))
 
     def run(self):
         try:
@@ -125,7 +112,6 @@ class Job(Thread):
             while self.execute:
                 if not self.paused:
                     interval = self.calculateInterval()
-                    print("Interval: %r in seconds" % interval)
                     time.sleep(interval)
                     self.function(**self.args_function)
         except TaskException as t:
@@ -236,7 +222,6 @@ class Job(Thread):
             #diferença entre o tempo atual e o tempo desejado em segundos
             diference = time_want - now
             sleep_time = None
-            print("diference: %r" % diference)
 
             if diference <= 0:
                 #só será executado no outro dia

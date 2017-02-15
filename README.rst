@@ -28,21 +28,22 @@ intervalos pré-determinados usando uma sintaxe bem simples.
 Características
 ---------------
 
-- Uma API simples para agendamenro de tarefas.
+- Uma API simples para agendamento de tarefas.
 - Sem dependência external.
 - teste unitário.
-- Testada no Python 2.7 and 3.4
+- Testada no Python 2.7, 3.4 e 3.5
 
 Sobre
 -----
 
-Santos permite que você agende a execução da alguma tarefa apenas decorando a
-função ou método como mostrado nos exemplos abaixo.
-Os testes foram feitos nas versões 2.7 e 3.4 do Python.
+Santos permite que se agende a execução da alguma tarefa apenas passando a função ou método a ser executado
+para o add_job do objeto da classe ThreadSchedule. É possível pausar, reativar e também remover uma tarefa do
+agendador.
 
-Os parâmetros aceitos são: name, seconds, minutes, hour, time_of_the_day, day_of_the_week,
+Os parâmetros aceitos para o método add_job são: id, seconds, minutes, hour, time_of_the_day, day_of_the_week,
 day_of_the_month.
-O Parâmetro name é usado para identificar a thread que será executada, assim é possível dar um stop.
+O Parâmetro id é obrigatório e é usado para identificar a tarefa que será executada, permitindo que se possa pausar,
+reativar ou remover a tarefa definida.
 Os parâmetros seconds, minutes e hour definem que a função ou método será executado
 repetidamente na frequência do valor passado com paramentro, em segundos, minutos e
 hora respectivamente.
@@ -66,34 +67,17 @@ Exemplos de uso
 
 .. code-block:: python
 
-    from santos import TaskScheduling, stopjobs
+    from santos import ThreadSchedule
 
-    @TaskScheduling(name="nome", seconds="30")
-    def do_something(a):
-        print("Print do_something: %s" % a)
-        import time
-        time.sleep(6)
-        print("terminou do_something")
+    def func(a):
+        print(a)
 
-    do_something()
-    stopjobs.stop("nome")
+    schedule.add_job(func, time_of_the_day="02:16:50", id="func1", kwargs={"a": "some data"})
 
-----------------------------------------------------------------------
+    schedule.add_job(func, seconds="3", id="func2", kwargs={"a": "B"})
 
-    class Teste(object):
 
-        @TaskScheduling(name="outronome", time_of_the_day="08:30:00")
-        def some_function(self, a):
-            print("Print some_function: %s" % a)
-            import time
-            print("Função some_function")
-            time.sleep(10)
-            print("terminou some_function")
-
-    obj = Teste()
-    obj.some_function("b")
-
-Veja ``exemples`` para mais exemplos
+Veja ``examples`` para mais exemplos
 
 Meta
 ----
