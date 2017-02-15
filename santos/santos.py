@@ -105,7 +105,7 @@ class Job(Thread):
             self.name = id or ""
             self.args_function = arguments_map.get("dargs").get("kwargs")  # argumentos para a função a ser executada
             if self.args_function:
-                del arguments_map["dargs"]["kwargs"] # removendo os parâmetros da função a ser executada
+                del arguments_map["dargs"]["kwargs"]  # removendo os parâmetros da função a ser executada
             self.arguments_map = arguments_map["dargs"]   # parâmetros de tempo
             self.function = func
             self.condict = Condition()  # controlará o bloqueio/desbloqueio do job
@@ -125,7 +125,7 @@ class Job(Thread):
             while self.execute:
                 if not self.paused:
                     interval = self.calculateInterval()
-                    log.debug("Interval: %r in seconds" % interval)
+                    print("Interval: %r in seconds" % interval)
                     time.sleep(interval)
                     self.function(**self.args_function)
         except TaskException as t:
@@ -236,8 +236,9 @@ class Job(Thread):
             #diferença entre o tempo atual e o tempo desejado em segundos
             diference = time_want - now
             sleep_time = None
+            print("diference: %r" % diference)
 
-            if diference < 0:
+            if diference <= 0:
                 #só será executado no outro dia
                 sleep_time = time_day - (diference * (-1))
             else:
