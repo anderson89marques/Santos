@@ -3,7 +3,7 @@ __author__ = 'anderson'
 
 from threading import Thread, Condition
 from datetime import datetime
-from exceptions import TaskException
+from santos.exceptions import TaskException
 import logging
 
 log = logging.getLogger(__name__)
@@ -35,10 +35,10 @@ class ThreadSchedule:
                 job.paused = False
                 break
 
-    def add_job(self, func, id, **kwargs):
+    def add_job(self, func, id, **parameters):
         """No kwargs estará todos os parâmetros para a função que será executada"""
         # é bom fazer um teste pra ver se de fato o id foi colocando, pois acho melhor esse parâmetro ser obrigatório
-        job = Job(func, id, dargs=kwargs)
+        job = Job(func, id, **parameters)
         self.__jobs.append(job)
         job.start()
 
@@ -86,14 +86,16 @@ class Job(Thread):
 
     days = {"M": 0, "Tu": 1, "W": 2, "Th": 3, "F": 4, "Sa": 5, "Su": 6}
 
-    def __init__(self, func, id, **arguments_map):
+    def __init__(self, func, id, **arguments):
         Thread.__init__(self)
         try:
-            self.name = id or ""
-            self.args_function = arguments_map.get("dargs").get("kwargs")  # argumentos para a função a ser executada
+            self.name = id or "" 
+            self.args_function = arguments["kwargs"] or None  # argumentos para a função a ser executada
+            
             if self.args_function:
-                del arguments_map["dargs"]["kwargs"]  # removendo os parâmetros da função a ser executada
-            self.arguments_map = arguments_map["dargs"]   # parâmetros de tempo
+                del arguments["kwargs"]  # removendo os parâmetros da função a ser executada
+            
+            self.arguments_map = arguments   # parâmetros de tempo
             self.function = func
             self.condict = Condition()  # controlará o bloqueio/desbloqueio do job
 

@@ -32,15 +32,15 @@ def func(a):
     print(a)
 
 schedule = ThreadSchedule()
-schedule.add_job(funcao, seconds="3", id="func1", kwargs={"a": "A"})
+schedule.add_job(funcao, seconds="4", id="func1", kwargs={"a": "A"})
 print("len1: {}".format(len(schedule)))
 schedule.add_job(funcao, seconds="3", id="func2", kwargs={"a": "B"})
 print("len2: {}".format(len(schedule)))
 schedule.add_job(func, day_of_the_week='Tu', time_of_the_day="02:16:50", id="func3", kwargs={"a": "Time_of"})
 print("len3: {}".format(len(schedule)))
 
-
-f(schedule, "func1")
-f1(schedule, "func1")
-f2(schedule, "func2")
+if __name__ == '__main__':
+    f(schedule, "func1")
+    f1(schedule, "func1")
+    f2(schedule, "func2")
 
