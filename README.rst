@@ -19,51 +19,18 @@ Então deu o nome do relógio para esta lib.
 Santos
 ========
 
-Um agendador de tarefas simples e eficente.
+Santos permite a execução de funcões e métodos python periódicamente em
+intervalos definidos por uma sintaxe bem simples.
 
-Um agendador para tarefas que precisam ser executados de forma periodica.
-Santos permite a você rodar funcões e métodos Python periodicamente em
-intervalos pré-determinados usando uma sintaxe bem simples.
-
-Características
----------------
-
-- Uma API simples para agendamento de tarefas.
-- Sem dependência external.
-- teste unitário.
-- Testada no Python 2.7, 3.4 e 3.5
-
-Sobre
------
-
-Santos permite que se agende a execução da alguma tarefa apenas passando a função ou método a ser executado
-para o add_job do objeto da classe ThreadSchedule. É possível pausar, reativar e também remover uma tarefa do
-agendador.
-
-Os parâmetros aceitos para o método add_job são: id, seconds, minutes, hour, time_of_the_day, day_of_the_week,
-day_of_the_month.
-O Parâmetro id é obrigatório e é usado para identificar a tarefa que será executada, permitindo que se possa pausar,
-reativar ou remover a tarefa definida.
-Os parâmetros seconds, minutes e hour definem que a função ou método será executado
-repetidamente na frequência do valor passado com paramentro, em segundos, minutos e
-hora respectivamente.
-obs: Esses três parâmetros não podem ser combinados, nem entre e nem com os dois abaixo.
-
-O parâmetro time_of_the_day define que a função ou método será executada todo dia em um horário específico,
-que deve ser passado no seguinte formato hh:mm:ss.(hh: 0..23 ; mm: 0..59, ss: 0..59)
-
-O parâmetro day_of_the_week define que a função será executada repetidamente no dia da semana passado como valor.
-Os valores possíveis são: Su(Sunday/Domingo), M(Monday/Segunda), Tu(Tuesday/Terça), W(Wednesday/Quarta),
-Th(Thursday/Quinta), F(Friday/Sexta), Sa(Saturday/Sábado) em maiúsculo. Sendo que este deve ser
-combinado com o parâmetro time_of_the_day para especificar a hora, minuto e segundo daquele dia da semana.
-
-
-Exemplos de uso
----------------
+Instalação
+----------
 
 .. code-block:: bash
 
     pip install Santos
+
+Exemplo
+--------
 
 .. code-block:: python
 
@@ -74,10 +41,71 @@ Exemplos de uso
 
     schedule.add_job(func, time_of_the_day="02:16:50", id="func1", kwargs={"a": "some data"})
 
+
+Características
+---------------
+
+- Uma API simples para agendamento de tarefas.
+- Sem dependência externa.
+- teste unitário.
+- Testada no Python 2.7, 3.4+
+
+Sobre
+-----
+
+Para fazer o agendamento alguma tarefa é preciso apenas passar a função ou método a ser executado
+para o método ``add_job`` da classe ThreadSchedule. É possível pausar, reativar e também remover uma tarefa do
+agendador, como mostrado na próxima seção.
+
+Os parâmetros aceitos pelo método add_job são: ``id, seconds, minutes, hour, time_of_the_day, day_of_the_week,
+day_of_the_month.``
+O ``id`` é obrigatório e é usado para identificar a tarefa que será executada, permitindo que se possa pausar,
+reativar ou remover a tarefa definida.
+
+Os parâmetros ``seconds, minutes e hour`` definem que a tarefa será executada
+em intervalo de segundos, minutos e hora respectivamente. Só podem ser usados um por vez.
+
+O parâmetro ``time_of_the_day`` define que a tarefa será executada todo dia em um horário específico,
+que deve ser passado no seguinte formato ``hh:mm:ss``. (hh= 0..23 ; mm= 0..59, ss= 0..59). Não pode ser combinada com seconds, minuts e hour.
+
+O parâmetro ``day_of_the_week`` define que a tarefa será executada repetidamente no dia da semana passado como valor.
+Os valores possíveis são: ``Su para Sunday/Domingo, M para Monday/Segunda, Tu para Tuesday/Terça, W para Wednesday/Quarta,
+Th para Thursday/Quinta, F para Friday/Sexta, Sa para Saturday/Sábado``. Sendo que este deve ser
+combinado com o parâmetro ``time_of_the_day`` para especificar a hora, minuto e segundo daquele dia da semana.
+
+
+Mais exemplos
+-------------
+
+.. code-block:: python
+
+    from santos import ThreadSchedule
+
+    def func(a):
+        print(a)
+
+    # Será executada todo dia às 02:16:50
+    schedule.add_job(func, time_of_the_day="02:16:50", id="func1", kwargs={"a": "some data"})
+
+    # Será executada a cada 3 segundos
     schedule.add_job(func, seconds="3", id="func2", kwargs={"a": "B"})
 
+    # Será executada toda quinta-feira às 02:16:50
+    schedule.add_job(func, day_of_the_week='Tu', time_of_the_day="02:16:50", id="func3", kwargs={"a": "Time_of"})
 
-Veja ``examples`` para mais exemplos
+    # Será executada a cada 3 horas
+    schedule.add_job(func, hour="3", id="func4", kwargs={"a": "B"})
+
+    ## Pausando tarefas
+    
+    # Pausando a tarefa com id igual a func3
+    schedule.pause_job("func3")
+
+    # Ativando novamente a tarefa com id igual a func3
+    schedule.resume_job("func3")
+
+    # Removendo uma tarefa
+    schedule.remove_job(job_name)
 
 Meta
 ----
