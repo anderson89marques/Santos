@@ -1,11 +1,8 @@
 .idea
 *.pyc
 __pycache__
-/docs
-docs/*
-*.egg
-*.egg-info
-Santos.egg-info
 build
 dist
 .venv
+.cache
+.cvscode
